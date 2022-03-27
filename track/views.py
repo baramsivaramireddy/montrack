@@ -122,6 +122,7 @@ def add(request):
 @api_view()
 def all_took(request):
     data    =   took.objects.all()
+    
     json = tookSerializer(data,many=True)
     return Response(json.data)
 
