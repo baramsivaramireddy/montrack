@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>stats</title>
+
+    <style>
+        .buttons{
+            display: flex;
+        }
+        .buttons div {
+            margin: 1rem;
+            text-transform: uppercase;
+            padding: 5px;
+            border: 1px dashed black;
+            border-radius: 5px;
+            
+        }
+        .buttons div:hover {
+            cursor: pointer;
+            background-color: aqua;
+        }
+        .took {
+            color: red;
+        }
+        .gave {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <a href="logout">logout</a>
+        <p><span>Total taken :</span> <span class="took">{{ stat.took}}</span></p>
+        <p><span>Total given :</span> <span class="gave">{{stat.gave}}</span></p>
+      
+
+        <div>
+            <div class="buttons">
+                <div id="mama_gave">mama gave me </div>
+                <div id="from_asset" >money from asset</div>
+               
+
+            </div>
+
+            <div>
+                <table id="transaction_table"> 
+                    <tr>
+                        <th>DATE</th>
+                        <th>AMOUNT</th>
+                        <th>PURPOSE</th>
+                      
+                    </tr>
+                    <tr>
+
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <a href="add"> add</a>
+    </div>
+    
+    <script>
+        window.addEventListener("DOMContentLoaded" ,()=>{
+            let mama_gave = document.querySelector("#mama_gave")
+            let from_asset = document.querySelector("#from_asset")
+            let transaction_table = document.querySelector("#transaction_table")
+            function emptyElement(element){
+    
+            while (element.childElementCount > 0)
+                {
+                    element.firstChild.remove()
+                }
+            }
+
+            async function get_mama_gave(){
+                
+              let data =  await  fetch('/gave').then(resp => resp.json())
+
+
+            emptyElement(transaction_table)
+
+            let head_row = document.createElement('tr')
+
+            let head_data = document.createElement('th')
+            head_data.innerHTML = 'DATE'
+            head_row.appendChild(head_data)
+
+            let head_amount = document.createElement('th')
+            head_amount.innerHTML = "AMOUNT"
+            head_row.appendChild(head_amount)
+
+            let head_purpose = document.createElement('th')
+            head_purpose.innerHTML = 'PURPOSE'
+            head_row.appendChild(head_purpose)
+
+            transaction_table.appendChild(head_row)
+
+
+
+            for (let i  = 0 ; i < data.length; i++){
+            let  new_tr = document.createElement('tr')
+            let date = document.createElement('td')
+            date.innerHTML =  data[i]["dataTime"].slice(0,10)
+            new_tr.appendChild(date)
+            let amount = document.createElement('td')
+            amount.innerHTML =  data[i]['amount']
+            new_tr.appendChild(amount)
+            let purpose = document.createElement('td')
+            purpose.innerHTML = data[i]['purpose']
+            new_tr.appendChild(purpose)
+            transaction_table.appendChild(new_tr)
+            }
+            }
+
+            async function get_from_assets(){
+                emptyElement(transaction_table)
+                
+                let data =  await  fetch('/took').then(resp => resp.json())
+                  
+            let head_row = document.createElement('tr')
+
+            let head_data = document.createElement('th')
+            head_data.innerHTML = 'DATE'
+            head_row.appendChild(head_data)
+
+            let head_amount = document.createElement('th')
+            head_amount.innerHTML = "AMOUNT"
+            head_row.appendChild(head_amount)
+
+            let head_purpose = document.createElement('th')
+            head_purpose.innerHTML = 'PURPOSE'
+            head_row.appendChild(head_purpose)
+
+            transaction_table.appendChild(head_row)
+
+              for (let i  = 0 ; i < data.length; i++){
+              let  new_tr = document.createElement('tr')
+              let date = document.createElement('td')
+              date.innerHTML =  data[i]["dataTime"].slice(0,10)
+              new_tr.appendChild(date)
+              let amount = document.createElement('td')
+              amount.innerHTML =  data[i]['amount']
+              new_tr.appendChild(amount)
+              let purpose = document.createElement('td')
+              purpose.innerHTML = data[i]['purpose']
+              new_tr.appendChild(purpose)
+              transaction_table.appendChild(new_tr)
+              }
+              }
+            mama_gave.addEventListener('click',get_mama_gave)
+              from_asset.addEventListener('click',get_from_assets)
+
+        })
+    </script>
+</body>
+</html>
