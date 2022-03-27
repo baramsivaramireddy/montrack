@@ -5,9 +5,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ADD</title>
+    <style>
+        .button {
+            display: flex;
+          
+        }
+        .button  a {
+            text-decoration: none;
+        }
+        .button div {
+            margin: 5px;
+            border: 1px solid blanchedalmond;
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <a href="logout">logout</a>
+   
     <div>
         <form action="api/add" method="post" >
             {% csrf_token %} 
@@ -25,14 +40,20 @@
             <select name="category" id="category">
             <option value="mama">from mama</option>
             <option value="assets">from assets</option>
+            <option value="expenses">expenses</option>
             </select>
             <br>
         <input type="submit" value="add">    
 
         </form>
     </div>
-    <div>
+    <div class="button">
+        <div>
+        <a href="logout">logout</a>
+        </div>
+        <div>
         <a href="../">back</a>
+        </div>
     </div>
 
 

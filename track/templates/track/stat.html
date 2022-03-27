@@ -9,6 +9,7 @@
     <style>
         .buttons{
             display: flex;
+
         }
         .buttons div {
             margin: 1rem;
@@ -28,20 +29,43 @@
         .gave {
             color: green;
         }
+
+        @media (max-width:720px) {
+            .buttons{
+                flex-direction: column;
+            }
+            .buttons div {
+                margin: 5px;
+            }
+        }
+        .button {
+            display: flex;
+          
+        }
+        .button  a {
+            text-decoration: none;
+        }
+        .button div {
+            margin: 5px;
+            border: 1px solid blanchedalmond;
+            padding: 5px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
     <div>
-        <a href="logout">logout</a>
+      
         <p><span>Total taken :</span> <span class="took">{{ stat.took}}</span></p>
         <p><span>Total given :</span> <span class="gave">{{stat.gave}}</span></p>
+        <p><span>Total expenses :</span> <span class="pink">{{stat.expenses}}</span></p>
       
 
         <div>
             <div class="buttons">
                 <div id="mama_gave">mama gave me </div>
                 <div id="from_asset" >money from asset</div>
-               
+                <div id="expenses">my expenses</div>
 
             </div>
 
@@ -60,11 +84,22 @@
             </div>
         </div>
 
-        <a href="add"> add</a>
+    
+    </div>
+
+    <div class="button">
+        <div>
+        <a href="logout">logout</a>
+        </div>
+        <div>
+        <a href="/add">ADD</a>
+        </div>
     </div>
     
     <script>
         window.addEventListener("DOMContentLoaded" ,()=>{
+            let expenses = document.querySelector("#expenses")
+
             let mama_gave = document.querySelector("#mama_gave")
             let from_asset = document.querySelector("#from_asset")
             let transaction_table = document.querySelector("#transaction_table")
@@ -151,8 +186,47 @@
               transaction_table.appendChild(new_tr)
               }
               }
+
+              async function get_expenses(){
+                emptyElement(transaction_table)
+                
+                let data =  await  fetch('/expenses').then(resp => resp.json())
+                  
+            let head_row = document.createElement('tr')
+
+            let head_data = document.createElement('th')
+            head_data.innerHTML = 'DATE'
+            head_row.appendChild(head_data)
+
+            let head_amount = document.createElement('th')
+            head_amount.innerHTML = "AMOUNT"
+            head_row.appendChild(head_amount)
+
+            let head_purpose = document.createElement('th')
+            head_purpose.innerHTML = 'PURPOSE'
+            head_row.appendChild(head_purpose)
+
+            transaction_table.appendChild(head_row)
+
+              for (let i  = 0 ; i < data.length; i++){
+              let  new_tr = document.createElement('tr')
+              let date = document.createElement('td')
+              date.innerHTML =  data[i]["dataTime"].slice(0,10)
+              new_tr.appendChild(date)
+              let amount = document.createElement('td')
+              amount.innerHTML =  data[i]['amount']
+              new_tr.appendChild(amount)
+              let purpose = document.createElement('td')
+              purpose.innerHTML = data[i]['purpose']
+              new_tr.appendChild(purpose)
+              transaction_table.appendChild(new_tr)
+              }
+              }
+
+
             mama_gave.addEventListener('click',get_mama_gave)
-              from_asset.addEventListener('click',get_from_assets)
+            from_asset.addEventListener('click',get_from_assets)
+            expenses.addEventListener('click',get_expenses)
 
         })
     </script>

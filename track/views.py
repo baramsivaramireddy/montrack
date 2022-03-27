@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate,login,logout
 from django.http import Http404, HttpResponse,HttpResponseRedirect ,HttpResponseNotFound,JsonResponse
-from .models import stats ,took ,gave
+from .models import stats ,took ,gave,expenses
 
 from rest_framework.response import Response
 from rest_framework import serializers
@@ -24,7 +24,10 @@ class tookSerializer(serializers.ModelSerializer):
         model = took
         fields = '__all__'
 
-   
+class ExpensesSerializer(serializers.ModelSerializer):
+    class Meta :
+        model = expenses
+        fields = '__all__'  
 class statsSerializer(serializers.ModelSerializer):
     class Meta :
         model = stats
@@ -53,6 +56,8 @@ def index(request):
 
 
 def stat(request):
+    if not request.user.is_authenticated :
+        return HttpResponseRedirect("/")
 
     try : 
         context = {
@@ -80,16 +85,32 @@ def add(request):
 
         if category == "mama":
             new_instance = took(amount=amount,purpose =purpose)
-            total_taken = stats.objects.get(pk=1)
-            total_taken.took += Decimal(amount)
-            total_taken.save()
+            try :
+                total_taken = stats.objects.get(pk=1)
+                total_taken.took += Decimal(amount)
+                total_taken.save()
+            except :
+                stats(gave=0,took=Decimal(amount),expenses=0).save()
             new_instance.save()
+        elif category == "expenses" :
+            new_instance = expenses(amount=amount,purpose =purpose)
+            try :
+                total_expense = stats.objects.get(pk=1)
+                total_expense.expenses += Decimal(amount)
+                total_expense.save()
+            except :
+                stats(gave=0,took=0, expenses=Decimal(amount)).save()
+            new_instance.save()
+            
 
         else :
             new_instance = gave(amount=amount,purpose =purpose)
-            total_given = stats.objects.get(pk=1)
-            total_given.gave += Decimal(amount)
-            total_given.save()
+            try :
+                total_given = stats.objects.get(pk=1)
+                total_given.gave += Decimal(amount)
+                total_given.save()
+            except :
+                stats(gave=Decimal(amount),took=0,expenses=0).save()
             new_instance.save()
         return  HttpResponseRedirect('/add')
         
@@ -104,6 +125,11 @@ def all_took(request):
     json = tookSerializer(data,many=True)
     return Response(json.data)
 
+@api_view()
+def expenses_view(request):
+    data    =   expenses.objects.all()
+    json = ExpensesSerializer(data,many=True)
+    return Response(json.data)
 
 @api_view()
 def all_gave(request):
