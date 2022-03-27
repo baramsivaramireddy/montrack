@@ -75,9 +75,9 @@
 <body>
     <div>
       
-        <p><span>Total taken :</span> <span class="took">{{ stat.took}}</span></p>
-        <p><span>Total given :</span> <span class="gave">{{stat.gave}}</span></p>
-        <p><span>Total expenses :</span> <span class="pink">{{stat.expenses}}</span></p>
+        <p><span> MAMA gave :</span> <span class="took">{{ stat.took}}</span></p>
+        <p><span>from assest :</span> <span class="gave">{{stat.gave}}</span></p>
+        <p><span>Expenses :</span> <span class="pink">{{stat.expenses}}</span></p>
       
 
         <div>
@@ -132,7 +132,7 @@
 
             async function get_mama_gave(){
                 
-              let data =  await  fetch('/gave').then(resp => resp.json())
+              let data =  await  fetch('/took').then(resp => resp.json())
 
 
             emptyElement(transaction_table)
@@ -173,7 +173,7 @@
             async function get_from_assets(){
                 emptyElement(transaction_table)
                 
-                let data =  await  fetch('/took').then(resp => resp.json())
+                let data =  await  fetch('/gave').then(resp => resp.json())
                   
             let head_row = document.createElement('tr')
 
