@@ -73,7 +73,8 @@ def stat(request):
 
 
 def add_view(request):
-
+    if not request.user.is_authenticated :
+        return HttpResponseRedirect("/")
     return render(request,'track/add.html')
 
 
